@@ -9,8 +9,8 @@ TypeScript的核心原则之一是对值所具有的*结构*进行类型检查�
 下面通过一个简单示例来观察接口是如何工作的：
 
 ```ts
-function printLabel(labelledObj: { label: string }) {
-  console.log(labelledObj.label);
+function printLabel(labeledObj: { label: string }) {
+  console.log(labeledObj.label);
 }
 
 let myObj = { size: 10, label: "Size 10 Object" };
@@ -25,19 +25,19 @@ printLabel(myObj);
 下面我们重写上面的例子，这次使用接口来描述：必须包含一个`label`属性且类型为`string`：
 
 ```ts
-interface LabelledValue {
+interface LabeledValue {
   label: string;
 }
 
-function printLabel(labelledObj: LabelledValue) {
-  console.log(labelledObj.label);
+function printLabel(labeledObj: LabeledValue) {
+  console.log(labeledObj.label);
 }
 
 let myObj = {size: 10, label: "Size 10 Object"};
 printLabel(myObj);
 ```
 
-`LabelledValue`接口就好比一个名字，用来描述上面例子里的要求。
+`LabeledValue`接口就好比一个名字，用来描述上面例子里的要求。
 它代表了有一个`label`属性且类型为`string`的对象。
 需要注意的是，我们在这里并不能像在其它语言里一样，说传给`printLabel`的对象实现了这个接口。我们只会去关注值的外形。
 只要传入的对象满足上面提到的必要条件，那么它就是被允许的。
@@ -200,6 +200,14 @@ interface SquareConfig {
 
 ```ts
 let squareOptions = { colour: "red", width: 100 };
+let mySquare = createSquare(squareOptions);
+```
+
+上面的方法只在`squareOptions`和`SquareConfig`之间有共同的属性时才好用。
+在这个例子中，这个属性为`width`。如果变量间不存在共同的对象属性将会报错。例如：
+
+```ts
+let squareOptions = { colour: "red" };
 let mySquare = createSquare(squareOptions);
 ```
 

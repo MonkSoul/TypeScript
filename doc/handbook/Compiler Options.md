@@ -3,13 +3,15 @@
 选项                                     | 类型      | 默认值                    | 描述
 ----------------------------------------|-----------|--------------------------|----------------------------------------------------------------------
 `--allowJs`                             | `boolean` |  `false`                 | 允许编译javascript文件。
-`--allowSyntheticDefaultImports`        | `boolean` | `module === "system"`或设置了`--esModuleInterop`且`module`不为`es2015`/`esnext` | 允许从没有设置默认导出的模块中默认导入。这并不影响代码的输出，仅为了类型检查。
+`--allowSyntheticDefaultImports`        | `boolean` | `module === "system"`或设置了`--esModuleInterop` | 允许从没有设置默认导出的模块中默认导入。这并不影响代码的输出，仅为了类型检查。
 `--allowUnreachableCode`                | `boolean` | `false`                  | 不报告执行不到的代码错误。
 `--allowUnusedLabels`                   | `boolean` | `false`                  | 不报告未使用的标签错误。
 `--alwaysStrict`                        | `boolean` | `false`                  | 以严格模式解析并为每个源文件生成`"use strict"`语句
-`--baseUrl`                             | `string`  |                          | 解析非相对模块名的基准目录。查看[模块解析文档](./Module Resolution.md#base-url)了解详情。
+`--baseUrl`                             | `string`  |                          | 解析非相对模块名的基准目录。查看[模块解析文档](./Module%20Resolution.md)了解详情。
+`--build`<br/>`-b`                      | `boolean` | `false`                  | 使用[Project References](./Project%20References.md)来构建此工程及其依赖工程。注意这个标记与本页内其它标记不兼容。详情参考[这里](./project-references.md)
 `--charset`                             | `string`  | `"utf8"`                 | 输入文件的字符集。
 `--checkJs`                             | `boolean` | `false`                  | 在.js文件中报告错误。与`--allowJs`配合使用。
+`--composite`                           | `boolean` | `true`                   | 确保TypeScript能够找到编译当前工程所需要的引用工程的输出位置。
 `--declaration`<br/>`-d`                | `boolean` | `false`                  | 生成相应的`.d.ts`文件。
 `--declarationDir`                      | `string`  |                          | 生成声明文件的输出路径。
 `--diagnostics`                         | `boolean` | `false`                  | 显示诊断信息。
@@ -72,7 +74,6 @@
 `--strictFunctionTypes`                 | `boolean` | `false`                  | 禁用函数参数双向协变检查。
 `--strictPropertyInitialization`        | `boolean` | `false`                  | 确保类的非`undefined`属性已经在构造函数里初始化。若要令此选项生效，需要同时启用`--strictNullChecks`。
 `--strictNullChecks`                    | `boolean` | `false`                  | 在严格的`null`检查模式下，`null`和`undefined`值不包含在任何类型里，只允许用它们自己和`any`来赋值（有个例外，`undefined`可以赋值到`void`）。
-`--stripInternal`<sup>[1]</sup>         | `boolean` | `false`                  | 不对具有`/** @internal */` JSDoc注解的代码生成代码。
 `--suppressExcessPropertyErrors`<sup>[1]</sup> | `boolean` | `false`           | 阻止对对象字面量的额外属性检查。
 `--suppressImplicitAnyIndexErrors`      | `boolean` | `false`                  | 阻止`--noImplicitAny`对缺少索引签名的索引对象报错。查看[issue #1232](https://github.com/Microsoft/TypeScript/issues/1232#issuecomment-64510362)了解详情。
 `--target`<br/>`-t`                     | `string`  | `"ES3"`                  | 指定ECMAScript目标版本`"ES3"`（默认），`"ES5"`，`"ES6"`/`"ES2015"`，`"ES2016"`，`"ES2017"`或`"ESNext"`。<br/><br/> 注意：`"ESNext"`最新的生成目标列表为[ES proposed features](https://github.com/tc39/proposals)

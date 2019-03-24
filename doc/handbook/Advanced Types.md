@@ -10,33 +10,37 @@
 下面是如何创建混入的一个简单例子("target": "es5")：
 
 ```ts
-function extend<T, U>(first: T, second: U): T & U {
-    let result = <T & U>{};
-    for (let id in first) {
-        (<any>result)[id] = (<any>first)[id];
-    }
-    for (let id in second) {
-        if (!result.hasOwnProperty(id)) {
-            (<any>result)[id] = (<any>second)[id];
+function extend<First, Second>(first: First, second: Second): First & Second {
+    const result: Partial<First & Second> = {};
+    for (const prop in first) {
+        if (first.hasOwnProperty(prop)) {
+            (<First>result)[prop] = first[prop];
         }
     }
-    return result;
+    for (const prop in second) {
+        if (second.hasOwnProperty(prop)) {
+            (<Second>result)[prop] = second[prop];
+        }
+    }
+    return <First & Second>result;
 }
 
 class Person {
     constructor(public name: string) { }
 }
+
 interface Loggable {
-    log(): void;
+    log(name: string): void;
 }
+
 class ConsoleLogger implements Loggable {
-    log() {
-        // ...
+    log(name) {
+        console.log(`Hello, I'm ${name}.`);
     }
 }
-var jim = extend(new Person("Jim"), new ConsoleLogger());
-var n = jim.name;
-jim.log();
+
+const jim = extend(new Person('Jim'), ConsoleLogger.prototype);
+jim.log(jim.name);
 ```
 
 # 联合类型（Union Types）
@@ -1188,13 +1192,13 @@ type T12 = ReturnType<(<T>() => T)>;  // {}
 type T13 = ReturnType<(<T extends U, U extends number[]>() => T)>;  // number[]
 type T14 = ReturnType<typeof f1>;  // { a: number, b: string }
 type T15 = ReturnType<any>;  // any
-type T16 = ReturnType<never>;  // any
+type T16 = ReturnType<never>;  // never
 type T17 = ReturnType<string>;  // Error
 type T18 = ReturnType<Function>;  // Error
 
 type T20 = InstanceType<typeof C>;  // C
 type T21 = InstanceType<any>;  // any
-type T22 = InstanceType<never>;  // any
+type T22 = InstanceType<never>;  // never
 type T23 = InstanceType<string>;  // Error
 type T24 = InstanceType<Function>;  // Error
 ```
