@@ -781,11 +781,11 @@ let unknown = getProperty(person, 'unknown'); // error, 'unknown' is not in 'nam
 并且`T[string]`为索引签名的类型：
 
 ```ts
-interface Map<T> {
+interface Dictionary<T> {
     [key: string]: T;
 }
-let keys: keyof Map<number>; // string
-let value: Map<number>['foo']; // number
+let keys: keyof Dictionary<number>; // string
+let value: Dictionary<number>['foo']; // number
 ```
 
 # 映射类型
@@ -896,7 +896,7 @@ let proxyProps = proxify(props);
 type Pick<T, K extends keyof T> = {
     [P in K]: T[P];
 }
-type Record<K extends string, T> = {
+type Record<K extends keyof any, T> = {
     [P in K]: T;
 }
 ```
