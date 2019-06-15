@@ -1,5 +1,5 @@
 这篇快速上手指南将教你如何使用[Gulp](http://gulpjs.com)构建TypeScript，和如何在Gulp管道里添加[Browserify](http://browserify.org)，[uglify](http://lisperator.net/uglifyjs/)或[Watchify](https://github.com/substack/watchify)。
-它还包涵了[Babel](https://babeljs.io/)的功能，通过使用[Babelify](https://github.com/babel/babelify)。
+本指南还会展示如何使用[Babelify](https://github.com/babel/babelify)来添加[Babel](https://babeljs.io/)的功能。
 
 这里假设你已经在使用[Node.js](https://nodejs.org/)和[npm](https://www.npmjs.com/)了。
 
@@ -398,7 +398,7 @@ cat dist/bundle.js
 默认情况下Babelify只会处理扩展名为`.js`，`.es`，`.es6`和`.jsx`的文件，因此我们需要添加`.ts`扩展名到Babelify选项。
 
 ```shell
-npm install --save-dev babelify babel-core babel-preset-es2015 vinyl-buffer gulp-sourcemaps
+npm install --save-dev babelify@8 babel-core babel-preset-es2015 vinyl-buffer gulp-sourcemaps
 ```
 
 修改gulpfile文件如下：
