@@ -7,13 +7,4 @@
     "structure": {
         "readme": "preface.md"
     }
-    // ,"plugins": [
-    //     "page-treeview"
-    // ],
-    // "pluginsConfig": {
-    //     "page-treeview": {
-    //          "copyright": "Copyright © zhongsp",
-    //          "style": "markdown"
-    //     }
-    // }
 }
