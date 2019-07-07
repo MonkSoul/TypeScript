@@ -14,15 +14,15 @@ function extend<First, Second>(first: First, second: Second): First & Second {
     const result: Partial<First & Second> = {};
     for (const prop in first) {
         if (first.hasOwnProperty(prop)) {
-            (<First>result)[prop] = first[prop];
+            (result as First)[prop] = first[prop];
         }
     }
     for (const prop in second) {
         if (second.hasOwnProperty(prop)) {
-            (<Second>result)[prop] = second[prop];
+            (result as Second)[prop] = second[prop];
         }
     }
-    return <First & Second>result;
+    return result as First & Second;
 }
 
 class Person {
@@ -151,11 +151,10 @@ else if (pet.fly) {
 ```ts
 let pet = getSmallPet();
 
-if ((<Fish>pet).swim) {
-    (<Fish>pet).swim();
-}
-else {
-    (<Bird>pet).fly();
+if ((pet as Fish).swim) {
+    (pet as Fish).swim();
+} else if ((pet as Bird).fly) {
+    (pet as Bird).fly();
 }
 ```
 
@@ -170,7 +169,7 @@ TypeScript里的*类型守卫*机制让它成为了现实。
 
 ```ts
 function isFish(pet: Fish | Bird): pet is Fish {
-    return (<Fish>pet).swim !== undefined;
+    return (pet as Fish).swim !== undefined;
 }
 ```
 
@@ -832,7 +831,7 @@ type ReadonlyPerson = Readonly<Person>;
 需要注意的是这个语法描述的是类型而非成员。
 若想添加额外的成员，则可以使用交叉类型：
 
- ```ts
+```ts
 // 这样使用
 type PartialWithNewMember<T> = {
   [P in keyof T]?: T[P];
