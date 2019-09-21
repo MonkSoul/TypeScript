@@ -483,7 +483,8 @@ declare function aliased(arg: Alias): Alias;
 declare function interfaced(arg: Interface): Interface;
 ```
 
-另一个重要区别是类型别名不能被`extends`和`implements`（自己也不能`extends`和`implements`其它类型）。
+在旧版本的TypeScript里，类型别名不能被继承和实现（它们也不能继承和实现其它类型）。从TypeScript 2.7开始，类型别名可以被继承并生成新的交叉类型。例如：`type Cat = Animal & { purrs: true }`。
+
 因为[软件中的对象应该对于扩展是开放的，但是对于修改是封闭的](https://en.wikipedia.org/wiki/Open/closed_principle)，你应该尽量去使用接口代替类型别名。
 
 另一方面，如果你无法通过接口来描述一个类型并且需要使用联合类型或元组类型，这时通常会使用类型别名。
@@ -727,46 +728,56 @@ let v = new ScientificCalculator(2)
 例如，一个常见的JavaScript模式是从对象中选取属性的子集。
 
 ```js
-function pluck(o, names) {
-    return names.map(n => o[n]);
+function pluck(o, propertyNames) {
+    return propertyNames.map(n => o[n]);
 }
 ```
 
 下面是如何在TypeScript里使用此函数，通过**索引类型查询**和**索引访问**操作符：
 
 ```ts
-function pluck<T, K extends keyof T>(o: T, names: K[]): T[K][] {
-  return names.map(n => o[n]);
+function pluck<T, K extends keyof T>(o: T, propertyNames: K[]): T[K][] {
+  return propertyNames.map(n => o[n]);
 }
 
-interface Person {
-    name: string;
-    age: number;
+interface Car {
+    manufacturer: string;
+    model: string;
+    year: number;
 }
-let person: Person = {
-    name: 'Jarid',
-    age: 35
+let taxi: Car = {
+    manufacturer: 'Toyota',
+    model: 'Camry',
+    year: 2014
 };
-let strings: string[] = pluck(person, ['name']); // ok, string[]
+
+// Manufacturer and model are both of type string,
+// so we can pluck them both into a typed string array
+let makeAndModel: string[] = pluck(taxi, ['manufacturer', 'model']);
+
+// If we try to pluck model and year, we get an
+// array of a union type: (string | number)[]
+let modelYear = pluck(taxi, ['model', 'year'])
 ```
 
-编译器会检查`name`是否真的是`Person`的一个属性。
+编译器会检查`manufacturer`和`model`是否真的是`Car`上的一个属性。
 本例还引入了几个新的类型操作符。
 首先是`keyof T`，**索引类型查询操作符**。
 对于任何类型`T`，`keyof T`的结果为`T`上已知的公共属性名的联合。
 例如：
 
 ```ts
-let personProps: keyof Person; // 'name' | 'age'
+let carProps: keyof Car; // the union of ('manufacturer' | 'model' | 'year')
 ```
 
-`keyof Person`是完全可以与`'name' | 'age'`互相替换的。
-不同的是如果你添加了其它的属性到`Person`，例如`address: string`，那么`keyof Person`会自动变为`'name' | 'age' | 'address'`。
+`keyof Car`是完全可以与`'manufacturer' | 'model' | 'year'`互相替换的。
+不同的是如果你添加了其它的属性到`Car`，例如`ownersAddress: string`，那么`keyof Car`会自动变为`'manufacturer' | 'model' | 'year' | 'ownersAddress'`。
 你可以在像`pluck`函数这类上下文里使用`keyof`，因为在使用之前你并不清楚可能出现的属性名。
 但编译器会检查你是否传入了正确的属性名给`pluck`：
 
 ```ts
-pluck(person, ['age', 'unknown']); // error, 'unknown' is not in 'name' | 'age'
+// error, 'unknown' is not in 'manufacturer' | 'model' | 'year'
+pluck(taxi, ['year', 'unknown']);
 ```
 
 第二个操作符是`T[K]`，**索引访问操作符**。
@@ -777,32 +788,47 @@ pluck(person, ['age', 'unknown']); // error, 'unknown' is not in 'name' | 'age'
 例如下面`getProperty`函数的例子：
 
 ```ts
-function getProperty<T, K extends keyof T>(o: T, name: K): T[K] {
-    return o[name]; // o[name] is of type T[K]
+function getProperty<T, K extends keyof T>(o: T, propertyName: K): T[K] {
+    return o[propertyName]; // o[propertyName] is of type T[K]
 }
 ```
 
-`getProperty`里的`o: T`和`name: K`，意味着`o[name]: T[K]`。
+`getProperty`里的`o: T`和`propertyName: K`，意味着`o[propertyName]: T[K]`。
 当你返回`T[K]`的结果，编译器会实例化键的真实类型，因此`getProperty`的返回值类型会随着你需要的属性改变。
 
 ```ts
-let name: string = getProperty(person, 'name');
-let age: number = getProperty(person, 'age');
-let unknown = getProperty(person, 'unknown'); // error, 'unknown' is not in 'name' | 'age'
+let name: string = getProperty(taxi, 'manufacturer');
+let year: number = getProperty(taxi, 'year');
+
+// error, 'unknown' is not in 'manufacturer' | 'model' | 'year'
+let unknown = getProperty(taxi, 'unknown');
 ```
 
 ## 索引类型和字符串索引签名
 
-`keyof`和`T[K]`与字符串索引签名进行交互。
-如果你有一个带有字符串索引签名的类型，那么`keyof T`会是`string`。
+`keyof`和`T[K]`与字符串索引签名进行交互。索引签名的参数类型必须为`number`或`string`。
+如果你有一个带有字符串索引签名的类型，那么`keyof T`会是`string | number`。
+(并非只有`string`，因为在JavaScript里，你可以使用字符串`object['42'`或
+数字`object[42]`索引来访问对象属性)。
 并且`T[string]`为索引签名的类型：
 
 ```ts
 interface Dictionary<T> {
     [key: string]: T;
 }
-let keys: keyof Dictionary<number>; // string
+let keys: keyof Dictionary<number>; // string | number
 let value: Dictionary<number>['foo']; // number
+```
+
+如果一个类型带有数字索引签名，那么`keyof T`为`number`。
+
+```ts
+interface Dictionary<T> {
+    [key: number]: T;
+}
+let keys: keyof Dictionary<number>; // number
+let value: Dictionary<number>['foo']; // Error, Property 'foo' does not exist on type 'Dictionary<number>'.
+let value: Dictionary<number>[42]; // number
 ```
 
 # 映射类型

@@ -37,10 +37,10 @@ readImage.sync = (path: string) => {
 此外，我们还在`readImage`上提供了一个便捷的函数`readImage.sync`。
 
 一般来说，使用ECMAScript导出是个更好的方式，但这个新功能支持此风格的代码能够在TypeScript里执行。
-此外，这种属性声明的方式允许我们表达一些常见的模式，例如React无状态函数型组件（SFCs）里的`defaultProps`和`propTpes` 。
+此外，这种属性声明的方式允许我们表达一些常见的模式，例如React函数组件（之前叫做SFC）里的`defaultProps`和`propTpes` 。
 
 ```ts
-export const FooComponent => ({ name }) => (
+export const FooComponent = ({ name }) => (
     <div>Hello! I am {name}</div>
 );
 

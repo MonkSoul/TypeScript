@@ -24,7 +24,7 @@ x = 0;      // OK
 x = false;  // Error: boolean is not assignable to number
 ```
 
-你可以在这里找到所有JSDoc支持的模式，[JSDoc文档](https://github.com/Microsoft/TypeScript/wiki/JSDoc-support-in-JavaScript)。
+你可以在这里找到所有JSDoc支持的模式，[JSDoc文档](#supported-jsdoc)。
 
 ## 属性的推断来自于类内的赋值语句
 
@@ -309,7 +309,7 @@ var p = new Promise((resolve, reject) => { reject() });
 p; // Promise<any>;
 ```
 
-# 支持的JSDoc
+# <a id="supported-jsdoc" name="supported-jsdoc"></a>支持的JSDoc
 
 下面的列表列出了当前所支持的JSDoc注解，你可以用它们在JavaScript文件里添加类型信息。
 
@@ -542,10 +542,10 @@ var specialTypeObject;
 
 ```js
 /**
- * @typedef {object} SpecialType1 - creates a new type named 'SpecialType'
- * @property {string} prop1 - a string property of SpecialType
- * @property {number} prop2 - a number property of SpecialType
- * @property {number=} prop3 - an optional number property of SpecialType
+ * @typedef {object} SpecialType1 - creates a new type named 'SpecialType1'
+ * @property {string} prop1 - a string property of SpecialType1
+ * @property {number} prop2 - a number property of SpecialType1
+ * @property {number=} prop3 - an optional number property of SpecialType1
  */
 /** @type {SpecialType1} */
 var specialTypeObject1;
@@ -595,7 +595,7 @@ const ok = s => !(s.length % 2);
 ```js
 /**
  * @template T
- * @param {T} p1 - A generic parameter that flows through to the return type
+ * @param {T} x - A generic parameter that flows through to the return type
  * @return {T}
  */
 function id(x){ return x }
@@ -739,7 +739,7 @@ let myArrow = x => x * x;
  * Which means it works for stateless function components in JSX too
  * @param {{a: string, b: number}} test - Some param
  */
-var sfc = (test) => <div>{test.a.charAt(0)}</div>;
+var fc = (test) => <div>{test.a.charAt(0)}</div>;
 
 /**
  * A parameter can be a class constructor, using Closure syntax.

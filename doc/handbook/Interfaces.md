@@ -171,7 +171,7 @@ let mySquare = createSquare({ colour: "red", width: 100 });
 如果一个对象字面量存在任何“目标类型”不包含的属性时，你会得到一个错误。
 
 ```ts
-// error: 'colour' not expected in type 'SquareConfig'
+// error: Object literal may only specify known properties, but 'colour' does not exist in type 'SquareConfig'. Did you mean to write 'color'?
 let mySquare = createSquare({ colour: "red", width: 100 });
 ```
 
@@ -324,6 +324,7 @@ interface NumberOrStringDictionary {
    [index: string]: number | string;
    length: number;    // ok, length is a number
    name: string;      // ok, name is a string
+}
 ```
 
 最后，你可以将索引签名设置为只读，这样就防止了给索引赋值：
